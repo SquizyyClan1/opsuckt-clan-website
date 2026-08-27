@@ -1,0 +1,93 @@
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page {
+  padding: 40px 20px;
+  min-height: calc(100vh - 80px);
+}
+
+.card {
+  background-color: #1a1f3a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: #4CAF50;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.btn-primary {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #45a049;
+}
+
+.btn-danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #da190b;
+}
+
+.btn-secondary {
+  background-color: #2196F3;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #0b7dda;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+}
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.alert-error {
+  background-color: #f44336;
+  color: white;
+}
+
+.alert-info {
+  background-color: #2196F3;
+  color: white;
+}
