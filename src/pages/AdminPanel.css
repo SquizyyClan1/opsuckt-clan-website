@@ -1,0 +1,225 @@
+.admin-container {
+  min-height: calc(100vh - 70px);
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  padding: 40px 20px;
+}
+
+.admin-container h1 {
+  color: #ff9800;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.admin-subtitle {
+  text-align: center;
+  color: #ccc;
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background-color: #1a1f3a;
+  border: 2px solid #333;
+  color: #ccc;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  border-color: #ff9800;
+  color: #ff9800;
+}
+
+.tab-btn.active {
+  background-color: #ff9800;
+  color: white;
+  border-color: #ff9800;
+}
+
+.admin-section {
+  background: #1a1f3a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.admin-section h2 {
+  color: #ff9800;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  border-bottom: 2px solid #333;
+  padding-bottom: 15px;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-item {
+  background: #0a0e27;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.user-item.pending:hover {
+  border-color: #ff9800;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+}
+
+.user-info h3 {
+  color: #4CAF50;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.user-info p {
+  color: #ccc;
+  font-size: 0.95rem;
+  margin: 5px 0;
+}
+
+.user-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-approve {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-approve:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+.btn-reject {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-reject:hover {
+  background-color: #da190b;
+  transform: translateY(-2px);
+}
+
+.btn-remove {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  align-self: center;
+}
+
+.btn-remove:hover {
+  background-color: #da190b;
+  transform: translateY(-2px);
+}
+
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.player-item {
+  background: #0a0e27;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.player-item:hover {
+  border-color: #4CAF50;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.player-head-admin {
+  width: 100px;
+  height: 100px;
+  border-radius: 4px;
+  border: 2px solid #4CAF50;
+}
+
+.player-info {
+  flex: 1;
+}
+
+.player-info h3 {
+  color: #4CAF50;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.player-info p {
+  color: #ccc;
+  font-size: 0.95rem;
+  margin: 3px 0;
+}
+
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 40px 20px;
+  font-size: 1.1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .user-item,
+  .player-item {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .user-info,
+  .player-info {
+    width: 100%;
+  }
+
+  .user-actions {
+    width: 100%;
+    justify-content: space-around;
+  }
+}
