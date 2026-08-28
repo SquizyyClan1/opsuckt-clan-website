@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
-function Login({ onLogin }) {
+function Login({ onLogin, apiUrl }) {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,16 +16,32 @@ function Login({ onLogin }) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(u => u.username === formData.username && u.password === formData.password);
+    setError('');
+    setLoading(true);
 
-    if (user) {
-      onLogin(user);
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login fehlgeschlagen');
+      }
+
+      onLogin(data.user, data.token);
       navigate('/dashboard');
-    } else {
-      setError('Benutzername oder Passwort falsch!');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,6 +59,7 @@ function Login({ onLogin }) {
               value={formData.username}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -52,11 +70,15 @@ function Login({ onLogin }) {
               value={formData.password}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
-          <button type="submit" className="btn-submit">Anmelden</button>
+          <button type="submit" className="btn-submit" disabled={loading}>
+            {loading ? '⏳ Anmelden...' : 'Anmelden'}
+          </button>
         </form>
         <p>Noch kein Account? <a href="/register">Hier registrieren</a></p>
+        <p className="demo-hint">Demo: admin / admin123</p>
       </div>
     </div>
   );

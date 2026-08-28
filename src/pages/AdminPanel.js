@@ -1,75 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import './AdminPanel.css';
 
-function AdminPanel() {
+function AdminPanel({ token, apiUrl }) {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [approvedPlayers, setApprovedPlayers] = useState([]);
   const [activeTab, setActiveTab] = useState('pending');
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    loadPendingUsers();
-    loadApprovedPlayers();
+    loadData();
   }, []);
 
-  const loadPendingUsers = () => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const pending = users.filter(u => !u.approved && u.role === 'user');
-    setPendingUsers(pending);
-  };
-
-  const loadApprovedPlayers = () => {
-    const players = JSON.parse(localStorage.getItem('players') || '[]');
-    setApprovedPlayers(players);
-  };
-
-  const approveUser = (userId) => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(u => u.id === userId);
-
-    if (user) {
-      user.approved = true;
-
-      // Speichere als Player
-      const players = JSON.parse(localStorage.getItem('players') || '[]');
-      players.push({
-        id: userId,
-        minecraftName: user.minecraftName,
-        discordName: user.discordName,
-        username: user.username,
-        approved: true,
-        approvedAt: new Date().toLocaleString('de-DE')
+  const loadData = async () => {
+    try {
+      // Lade ausstehende Genehmigungen
+      const pendingRes = await fetch(`${apiUrl}/api/admin/pending`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
+      if (pendingRes.ok) {
+        const pending = await pendingRes.json();
+        setPendingUsers(pending.filter(u => !u.approved));
+      }
 
-      localStorage.setItem('users', JSON.stringify(users));
-      localStorage.setItem('players', JSON.stringify(players));
-
-      loadPendingUsers();
-      loadApprovedPlayers();
-      alert(`${user.minecraftName} wurde genehmigt!`);
+      // Lade genehmigte Spieler
+      const playersRes = await fetch(`${apiUrl}/api/players`);
+      if (playersRes.ok) {
+        const players = await playersRes.json();
+        setApprovedPlayers(players);
+      }
+    } catch (err) {
+      setMessage('Fehler beim Laden der Daten: ' + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const rejectUser = (userId) => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const updatedUsers = users.filter(u => u.id !== userId);
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
-    loadPendingUsers();
-    alert('Benutzer wurde abgelehnt.');
+  const approveUser = async (userId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/admin/approve/${userId}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage(`✅ ${data.user.minecraftName} wurde genehmigt!`);
+        loadData();
+      } else {
+        setMessage('Fehler: ' + data.error);
+      }
+    } catch (err) {
+      setMessage('Fehler: ' + err.message);
+    }
   };
 
-  const removePlayer = (userId) => {
-    const players = JSON.parse(localStorage.getItem('players') || '[]');
-    const updatedPlayers = players.filter(p => p.id !== userId);
-    localStorage.setItem('players', JSON.stringify(updatedPlayers));
-    loadApprovedPlayers();
-    alert('Spieler wurde entfernt.');
+  const rejectUser = async (userId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/admin/reject/${userId}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage('✅ Benutzer wurde abgelehnt.');
+        loadData();
+      } else {
+        setMessage('Fehler: ' + data.error);
+      }
+    } catch (err) {
+      setMessage('Fehler: ' + err.message);
+    }
   };
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '50px', color: '#4CAF50' }}><h2>⏳ Lädt...</h2></div>;
 
   return (
     <div className="admin-container">
       <div className="container">
         <h1>🔧 Admin Panel</h1>
         <p className="admin-subtitle">Verwalte Clan-Mitglieder und Genehmigungen</p>
+
+        {message && (
+          <div className="alert" style={{
+            backgroundColor: message.includes('✅') ? '#4CAF50' : '#f44336',
+            color: 'white',
+            padding: '15px',
+            borderRadius: '4px',
+            marginBottom: '20px',
+            maxWidth: '600px',
+            margin: '0 auto 20px'
+          }}>
+            {message}
+          </div>
+        )}
 
         <div className="admin-tabs">
           <button
@@ -137,14 +160,8 @@ function AdminPanel() {
                     <div className="player-info">
                       <h3>{player.minecraftName}</h3>
                       <p><strong>Discord:</strong> {player.discordName}</p>
-                      <p><strong>Genehmigt:</strong> {player.approvedAt}</p>
+                      <p><strong>Genehmigt:</strong> {new Date(player.approvedAt).toLocaleDateString('de-DE')}</p>
                     </div>
-                    <button
-                      className="btn-remove"
-                      onClick={() => removePlayer(player.id)}
-                    >
-                      🗑️ Entfernen
-                    </button>
                   </div>
                 ))}
               </div>

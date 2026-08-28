@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
-function Register() {
+function Register({ apiUrl }) {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -12,6 +12,7 @@ function Register() {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,26 +20,34 @@ function Register() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    setError('');
+    setSuccess('');
+    setLoading(true);
 
-    if (users.find(u => u.username === formData.username)) {
-      setError('Benutzername existiert bereits!');
-      return;
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registrierung fehlgeschlagen');
+      }
+
+      setSuccess('Registrierung erfolgreich! Der Admin muss dich noch freischalten.');
+      setTimeout(() => navigate('/login'), 2000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    const newUser = {
-      ...formData,
-      role: 'user',
-      approved: false,
-      id: Date.now()
-    };
-
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    setSuccess('Registrierung erfolgreich! Der Admin muss dich noch freischalten.');
-    setTimeout(() => navigate('/login'), 2000);
   };
 
   return (
@@ -56,6 +65,7 @@ function Register() {
               value={formData.username}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -66,6 +76,7 @@ function Register() {
               value={formData.password}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -76,6 +87,7 @@ function Register() {
               value={formData.email}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -87,6 +99,7 @@ function Register() {
               onChange={handleChange}
               placeholder="z.B. Steve"
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -98,9 +111,12 @@ function Register() {
               onChange={handleChange}
               placeholder="z.B. User#1234"
               required
+              disabled={loading}
             />
           </div>
-          <button type="submit" className="btn-submit">Registrieren</button>
+          <button type="submit" className="btn-submit" disabled={loading}>
+            {loading ? '⏳ Registriert...' : 'Registrieren'}
+          </button>
         </form>
         <p>Bereits ein Account? <a href="/login">Hier anmelden</a></p>
       </div>

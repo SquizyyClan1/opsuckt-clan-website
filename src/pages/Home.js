@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import './Home.css';
 
-function Home({ user }) {
+function Home({ user, token, apiUrl }) {
   const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    // Lade Spieler aus localStorage
-    const savedPlayers = localStorage.getItem('players');
-    if (savedPlayers) {
-      const allPlayers = JSON.parse(savedPlayers);
-      setPlayers(allPlayers.filter(p => p.approved));
-    }
-  }, []);
+    const fetchPlayers = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/players`);
+        if (!response.ok) throw new Error('Fehler beim Laden der Spieler');
+        const data = await response.json();
+        setPlayers(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlayers();
+  }, [apiUrl]);
+
+  if (loading) return <div className="home"><p style={{ textAlign: 'center', padding: '50px' }}>⏳ Lädt...</p></div>;
 
   return (
     <div className="home">
@@ -47,6 +59,7 @@ function Home({ user }) {
 
         <section className="section">
           <h2>👥 Clan Mitglieder</h2>
+          {error && <div className="alert alert-error">{error}</div>}
           <div className="players-grid">
             {players.length > 0 ? (
               players.map((player, idx) => (

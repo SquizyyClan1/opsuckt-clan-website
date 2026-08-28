@@ -1,22 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 
-function Dashboard({ user }) {
+function Dashboard({ user, token, apiUrl }) {
   const [profile, setProfile] = useState(user);
-  const [message, setMessage] = useState('');
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const currentUser = users.find(u => u.id === user.id);
-    if (currentUser) {
-      setProfile(currentUser);
-    }
-  }, [user]);
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/user/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (!response.ok) throw new Error('Fehler beim Laden des Profils');
+        const data = await response.json();
+        setProfile(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    const fetchPlayers = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/api/players`);
+        if (!response.ok) throw new Error('Fehler beim Laden der Spieler');
+        const data = await response.json();
+        setPlayers(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+    fetchPlayers();
+  }, [apiUrl, token]);
+
+  if (loading) return <div style={{ textAlign: 'center', padding: '50px', color: '#4CAF50' }}><h2>⏳ Lädt...</h2></div>;
 
   return (
     <div className="dashboard-container">
       <div className="container">
         <h1>📊 Mein Dashboard</h1>
+        {error && <div className="alert alert-error" style={{ maxWidth: '600px', margin: '20px auto' }}>{error}</div>}
 
         <div className="dashboard-grid">
           <div className="card">
@@ -47,11 +77,8 @@ function Dashboard({ user }) {
             <div className="clan-info">
               <p>⚔️ <strong>Clan Name:</strong> OPSucht</p>
               <p>🎮 <strong>Server:</strong> Minecraft Java Edition</p>
-              <p>📍 <strong>Gegründet:</strong> 2024</p>
-              <p>👥 <strong>Mitglieder:</strong> {JSON.parse(localStorage.getItem('players') || '[]').length}</p>
-              {message && (
-                <div className="alert alert-info">{message}</div>
-              )}
+              <p>📋 <strong>Gegründet:</strong> 2024</p>
+              <p>👥 <strong>Mitglieder:</strong> {players.length}</p>
             </div>
           </div>
         </div>

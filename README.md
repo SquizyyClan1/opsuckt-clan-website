@@ -1,106 +1,116 @@
 # 🎮 OPSucht Clan Website
 
-Eine moderne Clan-Website für den Minecraft Server OPSucht mit Admin Panel und Spielerkopf-Integration.
+Eine moderne Clan-Website für den Minecraft Server OPSucht mit Admin Panel und echtem Backend!
 
-## 🚀 Features
+## 🚀 Architektur
 
-- **👤 User Authentication**
-  - Login & Registrierung
-  - Sichere Speicherung via localStorage
+```
+├── Frontend (GitHub Pages)
+│   └── React App
+│       ├── Login/Register
+│       ├── Dashboard
+│       └── Admin Panel
+│
+└── Backend (Replit)
+    └── Node.js Express
+        ├── JWT Authentication
+        ├── User Management
+        └── Approval System
+```
 
-- **🔧 Admin Panel**
-  - Verwalte ausstehende Anmeldungen
-  - Genehmige oder lehne Spieler ab
-  - Entferne genehmigte Mitglieder
+## ✨ Features
 
-- **🎨 Minecraft Integration**
-  - Automatische Spielerkopf-Anzeige
-  - Nur der Minecraft-Name muss eingegeben werden
-  - Nutzt mc-heads.net API
+✅ **Echtes Login-System** mit JWT Token  
+✅ **Sichere Passwörter** mit bcryptjs  
+✅ **Admin Panel** zum Freischalten von Spielern  
+✅ **Minecraft Spielerkopf** Integration  
+✅ **Responsive Design** für alle Geräte  
+✅ **Echte Datenbank** (Backend)
 
-- **📊 Dashboard**
-  - Persönliches Profil
-  - Status der Freischaltung
-  - Clan-Statistiken
+## 🔗 URLs
 
-- **📱 Responsive Design**
-  - Funktioniert auf allen Geräten
-  - Modern Dark Theme
-  - Smooth Animations
+### Frontend (GitHub Pages)
+```
+https://SquizyyClan1.github.io/opsuckt-clan-website/
+```
 
-## 📦 Installation
+### Backend (Replit)
+```
+https://opsuckt-clan-backend.replit.dev
+```
+
+## 🔑 Admin-Daten (Demo)
+
+- **Username:** `admin`
+- **Passwort:** `admin123`
+- **Minecraft:** `AdminSpieler`
+
+⚠️ WICHTIG: Ändere dies in der Produktion!
+
+## 📱 So funktioniert's
+
+### Für Spieler:
+1. Auf der Website registrieren
+2. Admin genehmigt die Anmeldung
+3. Du erscheinst automatisch in der Clan-Liste
+
+### Für Admins:
+1. Mit Admin-Account anmelden
+2. Admin Panel öffnen
+3. Ausstehende Spieler genehmigen/ablehnen
+4. Genehmigte Spieler verwalten
+
+## 🛠️ Setup
+
+### Backend auf Replit
+
+1. Öffne https://replit.com
+2. Klick "Create" → "Import from GitHub"
+3. Paste: `https://github.com/SquizyyClan1/opsuckt-clan-website-backend`
+4. Klick "Import" und "Run"
+5. Kopiere die Replit-URL (z.B. https://opsuckt-clan-backend.replit.dev)
+
+### Frontend Config
+
+In `src/App.js` Zeile 9 ggf. anpassen:
+```javascript
+const API_URL = process.env.REACT_APP_API_URL || 'https://opsuckt-clan-backend.replit.dev';
+```
+
+## 📦 Installation lokal
 
 ```bash
-# Dependencies installieren
+# Frontend
+cd opsuckt-clan-website
 npm install
-
-# Development Server starten
 npm start
 
-# Für Production bauen
-npm run build
+# Backend (anderen Terminal)
+cd opsuckt-clan-website-backend
+npm install
+npm start
+```
 
-# Deployen auf GitHub Pages
+## 🌍 Deployment
+
+### Frontend zu GitHub Pages
+```bash
 npm run deploy
 ```
 
-## 🏗️ Technologie Stack
+### Backend zu Replit
+1. Push zu GitHub
+2. Replit importiert automatisch
+3. Klick "Run"
 
-- **Frontend:** React 18
-- **Routing:** React Router v6
-- **Styling:** CSS3
-- **Storage:** localStorage
-- **Minecraft API:** mc-heads.net
-- **Deployment:** GitHub Pages
+## 📚 API Dokumentation
 
-## 🎯 Bedienung
+Siehe: `opsuckt-clan-website-backend/README.md`
 
-### Als normaler Spieler:
-1. Registrierung mit Minecraft-Name
-2. Warten auf Admin-Genehmigung
-3. Nach Genehmigung im Clan-Verzeichnis sichtbar
-
-### Als Admin:
-1. Login mit Admin-Account
-2. Admin Panel aufrufen
-3. Ausstehende Anmeldungen überprüfen
-4. Genehmigen oder Ablehnen
-5. Genehmigte Mitglieder verwalten
-
-## 📝 Admin Account erstellen
-
-Um einen Admin-Account zu erstellen:
-
-1. Browser Console öffnen (F12)
-2. Folgendes ausführen:
-
-```javascript
-const adminUser = {
-  id: Date.now(),
-  username: 'admin',
-  password: 'admin123',
-  email: 'admin@opsuckt.de',
-  minecraftName: 'AdminName',
-  discordName: 'Admin#1234',
-  role: 'admin',
-  approved: true
-};
-
-const users = JSON.parse(localStorage.getItem('users') || '[]');
-users.push(adminUser);
-localStorage.setItem('users', JSON.stringify(users));
-```
-
-3. Seite neu laden und mit Admin-Daten anmelden
-
-## 🌍 Live Demo
-
-https://SquizyyClan1.github.io/opsuckt-clan-website/
-
-## 📄 Lizenz
+## 📝 Lizenz
 
 MIT License - frei nutzbar
 
-## 👨‍💻 Entwickelt von
+## 👨‍💻 Support
 
-SquizyyClan1
+Bei Fragen: GitHub Issues erstellen
